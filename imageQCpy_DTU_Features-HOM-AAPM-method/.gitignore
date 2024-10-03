@@ -1,0 +1,28 @@
+# Windows
+Thumbs.db
+
+vendor_QC_reports/
+*.pyc
+__pycache__/
+.pytest_cache/
+*automation.log
+.pylintrc
+.coverage
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+*.egg*
+eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+.installed.cfg
+MANIFEST
+
