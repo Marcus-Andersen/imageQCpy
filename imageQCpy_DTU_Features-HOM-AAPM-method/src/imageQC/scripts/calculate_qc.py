@@ -11,7 +11,7 @@ from datetime import datetime
 from pathlib import Path
 import copy
 import warnings
-
+from scipy.ndimage import zoom
 import numpy as np
 import scipy as sp
 from scipy.signal import find_peaks
@@ -1175,7 +1175,14 @@ def calculate_2d(image2d, roi_array, image_info, modality,
         res = None
         if image2d is not None:
             for i in range(np.shape(roi_array)[0]):
-                arr = np.ma.masked_array(image2d, mask=np.invert(roi_array[i]))
+                # Beregn skaleringsfaktorer for masken i forhold til billedet
+                zoom_factors = (image2d.shape[0] / roi_array[i].shape[0], image2d.shape[1] / roi_array[i].shape[1])
+
+                # Brug scipy's zoom-funktion til at ændre størrelsen på masken
+                mask_resized = zoom(roi_array[i], zoom_factors, order=0)
+
+                # Anvend masken på billedet
+                arr = np.ma.masked_array(image2d, mask=np.invert(mask_resized))
                 avgs.append(np.mean(arr))
                 stds.append(np.std(arr))
 
@@ -3716,58 +3723,6 @@ def calculate_flatfield_mammo(image2d, mask_max, mask_outer, image_info, paramse
 
     return details
 
-def __init__(self, image2d, roi_array):
-        self.image2d = image2d
-        self.roi_array = roi_array
-
-def calculate_aamp(self):
-        results = {}
-        
-        # Initialiser lister til at holde data fra alle ROIs
-        signals = []
-        noises = []
-        snrs = []
-        
-        for i in range(len(self.roi_array)):
-            roi_mask = self.roi_array[i]
-
-            # Anvend maske på billedet for at få signalet
-            arr = np.ma.masked_array(self.image2d, mask=np.invert(roi_mask))
-
-            # Beregn nødvendige metrikker
-            avg_signal = arr.mean()
-            min_signal = arr.min()
-            max_signal = arr.max()
-            std_signal = arr.std()
-            roi_count = np.sum(roi_mask)  # Antal pixels i ROI
-
-            # Eksempel på støjberegning (kan tilpasses efter behov)
-            noise = np.random.normal(0, std_signal, size=arr.shape)  # Dummy støj
-            avg_noise = noise.mean()
-            snr = avg_signal / avg_noise if avg_noise != 0 else 0
-            
-            signals.append(avg_signal)
-            noises.append(avg_noise)
-            snrs.append(snr)
-
-        # Beregn de aggregerede værdier
-        results['Avg Signal'] = np.mean(signals)
-        results['Avg Noise'] = np.mean(noises)
-        results['Avg SNR'] = np.mean(snrs)
-        results['Min Signal'] = np.min([np.min(np.ma.masked_array(self.image2d, mask=np.invert(self.roi_array[i]))).compressed() for i in range(len(self.roi_array))])
-        results['Max Signal'] = np.max([np.max(np.ma.masked_array(self.image2d, mask=np.invert(self.roi_array[i]))).compressed() for i in range(len(self.roi_array))])
-        results['ROI Count'] = len(self.roi_array)
-        results['Avg Dev'] = np.mean([np.std(np.ma.masked_array(self.image2d, mask=np.invert(self.roi_array[i]))).compressed() for i in range(len(self.roi_array))])
-        results['SNR Std Dev'] = np.std(snrs)
-        
-        return results
-
-def run(self):
-        # Her kan du implementere logikken til at køre beregningerne
-        if self.alt == 4:  # Kontrollér om du vil køre AAPM-beregningerne
-            res = self.calculate_aamp()
-            # Skriv resultaterne til prompten
-            print("AAMP Results:", res)
 
 def get_corrections_point_source(
         image2d, img_info, roi_array,

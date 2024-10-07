@@ -352,7 +352,7 @@ class ImageCanvas(GenericImageCanvas):
         self.draw_idle()
 
     def roi_draw(self):
-        """Update ROI countours on image. """
+        """Update ROI countours on image."""
         self.remove_annotations()
 
         annotate = True

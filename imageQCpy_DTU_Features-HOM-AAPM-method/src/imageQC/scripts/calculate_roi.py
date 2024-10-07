@@ -977,7 +977,7 @@ def get_roi_hom_aapm(image_info, paramset):
             except ValueError as ve:
                 continue
 
-    #  Returner den samlede ROI-maske
+    # Returner den samlede ROI-maske
     return combined_mask
 
 def get_roi_CTn_TTF(test, image, image_info, paramset, delta_xya=[0, 0, 0.]):
