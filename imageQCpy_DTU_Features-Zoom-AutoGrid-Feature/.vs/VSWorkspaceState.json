@@ -1,0 +1,12 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\src",
+    "\\src\\imageQC",
+    "\\src\\imageQC\\config",
+    "\\src\\imageQC\\scripts",
+    "\\src\\imageQC\\ui"
+  ],
+  "SelectedNode": "\\src\\imageQC\\ui\\ui_main_test_tabs.py",
+  "PreviewInSolutionExplorer": false
+}
